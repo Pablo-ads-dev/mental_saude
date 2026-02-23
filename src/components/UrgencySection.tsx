@@ -1,25 +1,50 @@
 import { motion } from "framer-motion";
-import { Phone } from "lucide-react";
+import { Phone, AlertTriangle } from "lucide-react";
 
-const UrgencySection = () => (
-  <section id="urgencia" className="py-24 px-6" style={{ background: "linear-gradient(135deg, hsl(270 50% 30%), hsl(270 60% 50%))" }}>
-    <div className="max-w-3xl mx-auto text-center">
-      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-        <Phone size={48} className="text-white/80 mx-auto mb-6" />
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Precisa de ajuda agora?</h2>
-        <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
-          Se você ou alguém que conhece está em crise, ligue para o CVV. O serviço é gratuito, sigiloso e funciona 24 horas.
-        </p>
-        <a
-          href="tel:188"
-          className="inline-flex items-center gap-3 bg-white text-primary font-bold px-10 py-5 rounded-full text-xl hover:bg-white/90 transition-colors"
+const UrgencySection = () => {
+  return (
+    <section className="py-16 bg-background">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl bg-purple-dark text-primary-foreground p-8 md:p-12 text-center"
         >
-          <Phone size={24} /> Ligue 188
-        </a>
-        <p className="text-white/60 text-sm mt-6">Centro de Valorização da Vida • cvv.org.br</p>
-      </motion.div>
-    </div>
-  </section>
-);
+          <AlertTriangle className="w-10 h-10 mx-auto mb-4 opacity-80" />
+          <h2 className="font-display font-bold text-2xl md:text-3xl mb-4">
+            Preciso de ajuda agora
+          </h2>
+          <p className="text-primary-foreground/80 max-w-lg mx-auto mb-8 leading-relaxed">
+            Se você ou alguém que conhece está em crise, entre em contato imediatamente com um serviço de apoio. 
+            Você não precisa enfrentar isso sozinho(a).
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="tel:188"
+              className="inline-flex items-center gap-2 bg-primary-foreground text-purple-dark px-8 py-4 rounded-full font-display font-bold hover:opacity-90 transition-opacity"
+            >
+              <Phone className="w-5 h-5" />
+              Ligar para o CVV — 188
+            </a>
+            <a
+              href="https://www.cvv.org.br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border border-primary-foreground/30 text-primary-foreground px-8 py-4 rounded-full font-display font-medium hover:bg-primary-foreground/10 transition-colors"
+            >
+              Chat online — cvv.org.br
+            </a>
+          </div>
+
+          <p className="text-xs text-primary-foreground/50 mt-6">
+            O CVV atende 24 horas, por telefone, chat e e-mail. A ligação é gratuita.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
 
 export default UrgencySection;

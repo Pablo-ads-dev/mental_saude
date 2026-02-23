@@ -1,20 +1,34 @@
-import Navbar from "@/components/Navbar";
+import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import ThemesSection from "@/components/ThemesSection";
-import TestSection from "@/components/TestSection";
-import CorporateSection from "@/components/CorporateSection";
+import CarouselSection from "@/components/CarouselSection";
+import ProblemsSection from "@/components/ProblemsSection";
+import SymptomsSection from "@/components/SymptomsSection";
+import QuickTestSection from "@/components/QuickTestSection";
+import SolutionsSection from "@/components/SolutionsSection";
+import OnlineCareSection from "@/components/OnlineCareSection";
+import ReferencesSection from "@/components/ReferencesSection";
+import FAQSection from "@/components/FAQSection";
 import UrgencySection from "@/components/UrgencySection";
+import CompaniesSection from "@/components/CompaniesSection";
+import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <Header />
       <HeroSection />
-      <ThemesSection />
-      <TestSection />
-      <CorporateSection />
+      <CarouselSection />
+      <ProblemsSection />
+      <SymptomsSection />
+      <QuickTestSection />
+      <SolutionsSection />
+      <OnlineCareSection />
+      <ReferencesSection />
+      <FAQSection />
       <UrgencySection />
+      <CompaniesSection />
+      <NewsletterSection />
       <Footer />
     </div>
   );
