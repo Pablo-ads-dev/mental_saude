@@ -7,7 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const searchParams = new URLSearchParams(window.location.search);
+  const [isLogin, setIsLogin] = useState(!searchParams.has("signup"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
