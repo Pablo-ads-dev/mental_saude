@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X, Heart } from "lucide-react";
+import { Moon, Sun, Menu, X, Heart, LogIn, UserPlus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Início", href: "#hero" },
@@ -16,6 +17,7 @@ const navLinks = [
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card">
@@ -38,6 +40,30 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          {user ? (
+            <button
+              onClick={signOut}
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent transition-colors"
+            >
+              <LogOut className="w-4 h-4" /> Sair
+            </button>
+          ) : (
+            <>
+              <a
+                href="/auth"
+                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent transition-colors"
+              >
+                <LogIn className="w-4 h-4" /> Entrar
+              </a>
+              <a
+                href="/auth?signup=true"
+                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+              >
+                <UserPlus className="w-4 h-4" /> Cadastrar
+              </a>
+            </>
+          )}
+
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="p-2 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
@@ -75,6 +101,23 @@ const Header = () => {
                   {link.label}
                 </a>
               ))}
+              {user ? (
+                <button
+                  onClick={() => { signOut(); setMenuOpen(false); }}
+                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary py-1"
+                >
+                  <LogOut className="w-4 h-4" /> Sair
+                </button>
+              ) : (
+                <>
+                  <a href="/auth" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary py-1">
+                    <LogIn className="w-4 h-4" /> Entrar
+                  </a>
+                  <a href="/auth?signup=true" className="flex items-center gap-2 text-sm font-medium text-primary py-1">
+                    <UserPlus className="w-4 h-4" /> Cadastrar
+                  </a>
+                </>
+              )}
             </div>
           </motion.nav>
         )}
