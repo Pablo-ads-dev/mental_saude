@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Dumbbell, Moon, UtensilsCrossed, Briefcase, Users, Wallet, HeartHandshake } from "lucide-react";
 
@@ -57,6 +57,7 @@ const cards = [
 const CarouselSection = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -64,6 +65,22 @@ const CarouselSection = () => {
       scrollRef.current.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" });
     }
   };
+
+  const autoScroll = useCallback(() => {
+    if (scrollRef.current && !isHovered) {
+      const el = scrollRef.current;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: 1, behavior: "auto" });
+      }
+    }
+  }, [isHovered]);
+
+  useEffect(() => {
+    const interval = setInterval(autoScroll, 30);
+    return () => clearInterval(interval);
+  }, [autoScroll]);
 
   const toggleCard = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -86,7 +103,11 @@ const CarouselSection = () => {
           </p>
         </motion.div>
 
-        <div className="relative">
+        <div
+          className="relative"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           <button
             onClick={() => scroll("left")}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-card shadow-card text-muted-foreground hover:text-primary transition-colors hidden md:flex"
@@ -114,10 +135,16 @@ const CarouselSection = () => {
                 <motion.div
                   key={i}
                   onClick={() => toggleCard(i)}
-                  className={`flex-shrink-0 w-[300px] snap-center rounded-2xl bg-card p-6 cursor-pointer transition-all duration-300 border border-border ${
-                    isExpanded ? "shadow-card-hover" : "shadow-card hover:shadow-card-hover"
-                  }`}
-                  whileHover={{ y: -4 }}
+                  className="flex-shrink-0 w-[300px] snap-center rounded-2xl bg-card p-6 cursor-pointer transition-all duration-300 border border-border"
+                  style={{
+                    boxShadow: isExpanded
+                      ? "0 20px 60px -10px hsl(267 55% 63% / 0.5), 0 8px 24px -4px hsl(272 91% 76% / 0.3)"
+                      : "0 12px 40px -8px hsl(267 55% 63% / 0.35), 0 4px 16px -4px hsl(272 91% 76% / 0.2)",
+                  }}
+                  whileHover={{
+                    y: -6,
+                    boxShadow: "0 24px 64px -10px hsl(267 55% 63% / 0.55), 0 12px 32px -4px hsl(272 91% 76% / 0.35)",
+                  }}
                   layout
                 >
                   <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center mb-4">

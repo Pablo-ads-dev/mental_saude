@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ClipboardCheck, RotateCcw } from "lucide-react";
+import { ClipboardCheck, RotateCcw, ArrowRight } from "lucide-react";
 
 const questions = [
   "Tenho me sentido mais cansado(a) do que o normal, mesmo descansando.",
@@ -41,6 +41,7 @@ const getResult = (score: number) => {
 const QuickTestSection = () => {
   const [answers, setAnswers] = useState<Record<number, Answer>>({});
   const [showResult, setShowResult] = useState(false);
+  const [testStarted, setTestStarted] = useState(false);
 
   const handleAnswer = (qIndex: number, value: Answer) => {
     setAnswers((prev) => ({ ...prev, [qIndex]: value }));
@@ -58,6 +59,7 @@ const QuickTestSection = () => {
   const reset = () => {
     setAnswers({});
     setShowResult(false);
+    setTestStarted(false);
   };
 
   return (
@@ -79,7 +81,21 @@ const QuickTestSection = () => {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {!showResult ? (
+          {!testStarted ? (
+            <motion.div key="cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
+              <div className="bg-card rounded-2xl p-8 border border-border shadow-card">
+                <p className="text-foreground/80 leading-relaxed mb-6">
+                  Este teste leva menos de 2 minutos e pode ajudar você a refletir sobre como está se sentindo. É completamente anônimo e não substitui uma avaliação profissional.
+                </p>
+                <button
+                  onClick={() => setTestStarted(true)}
+                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full font-display font-medium hover:opacity-90 transition-opacity"
+                >
+                  Iniciar o teste <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          ) : !showResult ? (
             <motion.div key="questions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <div className="space-y-6">
                 {questions.map((q, i) => (
