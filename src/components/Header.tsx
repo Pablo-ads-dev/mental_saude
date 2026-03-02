@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X, Heart, LogIn, UserPlus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Início", href: "#hero" },
@@ -17,7 +17,8 @@ const navLinks = [
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  // const { user, signOut } = useAuth();
+  const [user, setUser] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card">
@@ -42,7 +43,7 @@ const Header = () => {
         <div className="flex items-center gap-2">
           {user ? (
             <button
-              onClick={signOut}
+              onClick={() => setUser(false)}
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent transition-colors"
             >
               <LogOut className="w-4 h-4" /> Sair
@@ -103,7 +104,7 @@ const Header = () => {
               ))}
               {user ? (
                 <button
-                  onClick={() => { signOut(); setMenuOpen(false); }}
+                  onClick={() => { () => setUser(false); setMenuOpen(false); }}
                   className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary py-1"
                 >
                   <LogOut className="w-4 h-4" /> Sair

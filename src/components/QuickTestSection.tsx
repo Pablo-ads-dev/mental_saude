@@ -108,11 +108,10 @@ const QuickTestSection = () => {
                         <button
                           key={opt.value}
                           onClick={() => handleAnswer(i, opt.value)}
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                            answers[i] === opt.value
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                          }`}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${answers[i] === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                            }`}
                         >
                           {opt.label}
                         </button>
@@ -121,10 +120,20 @@ const QuickTestSection = () => {
                   </div>
                 ))}
               </div>
-
               <div className="text-center mt-8">
                 <button
-                  onClick={() => allAnswered && setShowResult(true)}
+                  onClick={() => {
+                    if (allAnswered) {
+                      setShowResult(true);
+                      // Aguarda um micro-segundo para o React renderizar o componente de resultado
+                      setTimeout(() => {
+                        document.getElementById('teste')?.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'start'
+                        });
+                      }, 10);
+                    }
+                  }}
                   disabled={!allAnswered}
                   className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full font-display font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
                 >
@@ -133,23 +142,37 @@ const QuickTestSection = () => {
               </div>
             </motion.div>
           ) : (
+            // a motion div tem propriedades como initial e animate, que são animações e estilizações a mais
             <motion.div
               key="result"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-card rounded-2xl p-8 border border-border shadow-card-hover text-center"
             >
-              <p className={`font-display font-bold text-2xl mb-4 ${result.color}`}>{result.level}</p>
-              <p className="text-foreground/80 leading-relaxed mb-6">{result.message}</p>
+              <p className="font-display font-bold text-2xl mb-4 text-primary">
+                Resultado Disponível
+              </p>
+              <p className="text-foreground/80 leading-relaxed mb-6">
+                Para saber a sua resposta detalhada e conferir o resultado, realize o login na sua conta.
+              </p>
+
               <p className="text-xs text-muted-foreground italic mb-6">
                 ⚠️ Este teste é apenas informativo e baseado em autopercepção. Não substitui avaliação de um profissional de saúde mental.
               </p>
-              <button
-                onClick={reset}
-                className="inline-flex items-center gap-2 text-primary hover:underline font-medium text-sm"
-              >
-                <RotateCcw className="w-4 h-4" /> Refazer o teste
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <button
+                  onClick={() => window.location.href = '/auth'} // Altere para sua rota de login
+                  className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-bold hover:opacity-90 transition-opacity"
+                >
+                  Fazer Login
+                </button>
+                <button
+                  onClick={() => window.location.href = '/auth'}
+                  className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground hover:underline font-medium text-sm"
+                >
+                  <RotateCcw className="w-4 h-4" /> Refazer o teste
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

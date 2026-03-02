@@ -69,16 +69,19 @@ const CarouselSection = () => {
   const autoScroll = useCallback(() => {
     if (scrollRef.current && !isHovered) {
       const el = scrollRef.current;
+      const cardWidth = 300; // Ajuste para a largura do seu card + gap
+
       if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
         el.scrollTo({ left: 0, behavior: "smooth" });
       } else {
-        el.scrollBy({ left: 1, behavior: "auto" });
+        // Pula um bloco inteiro de forma suave
+        el.scrollBy({ left: cardWidth, behavior: "smooth" });
       }
     }
   }, [isHovered]);
 
   useEffect(() => {
-    const interval = setInterval(autoScroll, 30);
+    const interval = setInterval(autoScroll, 2500); // Espera 3s e pula
     return () => clearInterval(interval);
   }, [autoScroll]);
 
