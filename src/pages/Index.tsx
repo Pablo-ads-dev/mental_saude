@@ -12,7 +12,7 @@ import UrgencySection from "@/components/UrgencySection";
 import CompaniesSection from "@/components/CompaniesSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
-
+import FloatingButton from "@/components/FloatingButton";
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
@@ -30,6 +30,7 @@ const Index = () => {
       <CompaniesSection />
       <NewsletterSection />
       <Footer />
+      <FloatingButton />
     </div>
   );
 };
