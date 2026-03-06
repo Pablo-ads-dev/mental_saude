@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Heart, Mail, Lock, User, ArrowLeft } from "lucide-react";
-// import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 
 const Auth = () => {
@@ -16,11 +16,11 @@ const Auth = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  // const { user } = useAuth();
+  const { user } = useAuth();
 
-  // useEffect(() => {
-  //   if (user) navigate("/");
-  // }, [user, navigate]);
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,22 +28,22 @@ const Auth = () => {
     setMessage("");
     setLoading(true);
 
-    // if (isLogin) {
-    //   // const { error } = await supabase.auth.signInWithPassword({ email, password });
-    //   if (error) setError(error.message);
-    //   else navigate("/");
-    // } else {
-    //   // const { error } = await supabase.auth.signUp({
-    //   //   email,
-    //   //   password,
-    //   //   options: {
-    //   //     data: { display_name: displayName },
-    //   //     emailRedirectTo: window.location.origin,
-    //   //   },
-    //   // });
-    //   // if (error) setError(error.message);
-    //   else setMessage("Verifique seu e-mail para confirmar o cadastro.");
-    // }
+    if (isLogin) {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) setError(error.message);
+      else navigate("/dash");
+    } else {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name: displayName },
+          emailRedirectTo: window.location.origin,
+        },
+      });
+      if (error) setError(error.message);
+      else setMessage("Verifique seu e-mail para confirmar o cadastro.");
+    }
     setLoading(false);
   };
 
