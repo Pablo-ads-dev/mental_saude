@@ -24,10 +24,10 @@ const Index = () => {
       <QuickTestSection />
       <SolutionsSection />
       <OnlineCareSection />
-      <ReferencesSection />
-      <FAQSection />
+      {/* <ReferencesSection /> */}
       <UrgencySection />
-      <CompaniesSection />
+      {/* <CompaniesSection /> */}
+      <FAQSection/>
       <NewsletterSection />
       <Footer />
       <FloatingButton />
