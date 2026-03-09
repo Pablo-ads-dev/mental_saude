@@ -7,7 +7,7 @@ import {
   LogOut
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "../context/AuthContext";
 
 export function SideBar() {
   const location = useLocation();

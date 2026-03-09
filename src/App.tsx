@@ -9,7 +9,7 @@ import NotFound from "./pages/NotFound";
 import Dash from "./pages/Dash";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/authContext";
+import { AuthProvider } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
 
