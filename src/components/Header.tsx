@@ -13,13 +13,11 @@ const navLinks = [
   { label: "Empresas", href: "#empresas" },
   { label: "FAQ", href: "#faq" },
 ];
-
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   // const { user, signOut } = useAuth();
   const [user, setUser] = useState(false);
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -27,7 +25,6 @@ const Header = () => {
           <Heart className="w-6 h-6 text-primary fill-primary/30" />
           <span>MenteSã</span>
         </a>
-
         <nav className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
             <a
@@ -39,7 +36,6 @@ const Header = () => {
             </a>
           ))}
         </nav>
-
         <div className="flex items-center gap-2">
           {user ? (
             <button
@@ -64,7 +60,6 @@ const Header = () => {
               </a>
             </>
           )}
-
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="p-2 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
@@ -72,7 +67,6 @@ const Header = () => {
           >
             {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
-
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="lg:hidden p-2 rounded-lg hover:bg-accent transition-colors text-muted-foreground"
@@ -82,7 +76,6 @@ const Header = () => {
           </button>
         </div>
       </div>
-
       <AnimatePresence>
         {menuOpen && (
           <motion.nav

@@ -1,15 +1,33 @@
-import { 
-  LayoutDashboard, 
-  CheckCircle2, 
-  GraduationCap, 
-  Settings, 
+import {
+  LayoutDashboard,
+  CheckCircle2,
+  GraduationCap,
+  Settings,
   User,
   LogOut
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 export function SideBar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOutUser } = useAuth();
+
+  // Função com a lógica de confirmação
+  const handleLogout = async () => {
+    const confirmed = window.confirm("Você realmente deseja sair da sua conta?");
+
+    if (confirmed) {
+      try {
+        await signOutUser();
+        navigate("/"); // Redireciona para a home ou login
+      } catch (error) {
+        console.error("Erro ao deslogar:", error);
+        alert("Ocorreu um erro ao tentar sair.");
+      }
+    }
+  };
 
   const menuItems = [
     { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/dash" },
@@ -39,11 +57,10 @@ export function SideBar() {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300 ${
-                isActive 
-                  ? "bg-primary text-primary-foreground shadow-card" 
+              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300 ${isActive
+                  ? "bg-primary text-primary-foreground shadow-card"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-              }`}
+                }`}
             >
               {item.icon}
               {item.label}
@@ -53,7 +70,11 @@ export function SideBar() {
       </nav>
 
       <div className="p-6 border-t border-sidebar-border">
-        <button className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-destructive hover:bg-destructive/10 rounded-2xl transition-colors">
+        {/* Botão atualizado com onClick */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-destructive hover:bg-destructive/10 rounded-2xl transition-colors"
+        >
           <LogOut size={20} />
           Sair da conta
         </button>
