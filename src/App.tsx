@@ -10,6 +10,7 @@ import Dash from "./pages/Dash";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,11 @@ const App = () => (
                 <Dash />
               </ProtectedRoute>
             } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }></Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
