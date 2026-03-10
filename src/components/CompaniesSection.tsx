@@ -49,7 +49,7 @@ const CompaniesSection = () => {
             );
           })}
         </div>
-
+{/* 
         <div className="text-center">
           <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full font-display font-medium hover:opacity-90 transition-opacity">
             Comece pela escuta
@@ -57,7 +57,7 @@ const CompaniesSection = () => {
           <p className="text-xs text-muted-foreground mt-3 italic">
             Promover saúde mental também é liderança.
           </p>
-        </div>
+        </div> */}
       </div>
     </section>
   );
