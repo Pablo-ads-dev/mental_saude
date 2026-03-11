@@ -1,32 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SideBar } from "@/components/SideBar";
 import { User, Mail, Phone, Lock, Save, X, Edit3, ShieldCheck, Camera } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 // Utilizando o seu Type
 export type Profile = {
     name?: string,
-    phone?: string
+    image?: string,
+    phone?: string,
+    type?: "user"
 }
 
 export default function ProfilePage() {
+    const { user, signOutUser } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [userProfile, setUserProfile] = useState<Profile>({
-        name: "Gabriel Silva",
-        phone: "(11) 99999-9999"
+        type: "user"
     });
+    useEffect(() => {
+        async function fetchProfile() {
+            if (!user) return;
 
-    const [email, setEmail] = useState("gabriel@mentesa.com");
-    const [password, setPassword] = useState("");
+            const { data, error } = await supabase
+                .from("profiles")
+                .select("*")
+                .eq("user_id", user.id)
+                .single();
+
+            if (error) {
+                console.error(error);
+                return;
+            }
+
+            if (data) {
+                setUserProfile(data);
+            }
+        }
+
+        fetchProfile();
+    }, [user]);
+    async function handleUserProfile() {
+        if (!user) return;
+        const data = {
+            ...userProfile, user_id: user?.id
+        };
+        const { error } = await supabase.from('profiles').upsert(data)
+        if (error) {
+            console.error(error);
+            return;
+        }
+    }
 
     return (
         <div className="flex min-h-screen bg-background transition-colors duration-500 selection:bg-primary/30">
             <SideBar />
-
             <main className="flex-1 md:ml-64 p-6 md:p-12 lg:p-20 pb-32">
                 <div className="max-w-5xl mx-auto space-y-10">
-                    
                     {/* Header com Identidade Visual */}
                     <header className="flex flex-col md:flex-row items-center gap-8 border-b border-border/50 pb-10">
                         <div className="relative group">
@@ -39,7 +71,6 @@ export default function ProfilePage() {
                                 <Camera size={18} />
                             </button>
                         </div>
-
                         <div className="text-center md:text-left space-y-2">
                             <h1 className="text-4xl md:text-5xl font-display font-black text-foreground tracking-tight">
                                 Sua <span className="text-gradient-purple">Conta</span>
@@ -49,13 +80,12 @@ export default function ProfilePage() {
                             </p>
                         </div>
                     </header>
-
                     {/* Card de Informações Estilo Glass */}
                     <Card className="glass-card border-border/50 shadow-card rounded-[32px] overflow-hidden relative">
                         {/* Botão de Edição Flutuante Interno */}
                         <div className="absolute top-6 right-6 z-10">
                             {!isEditing ? (
-                                <Button 
+                                <Button
                                     onClick={() => setIsEditing(true)}
                                     className="bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold rounded-2xl px-4 py-4 h-auto transition-all gap-2"
                                 >
@@ -63,17 +93,20 @@ export default function ProfilePage() {
                                 </Button>
                             ) : (
                                 <div className="flex gap-3 animate-in fade-in slide-in-from-right-4">
-                                    <Button 
-                                        onClick={() => setIsEditing(false)} 
-                                        variant="ghost" 
+                                    <Button
+                                        onClick={() => setIsEditing(false)}
+                                        variant="ghost"
                                         className="text-muted-foreground hover:bg-red-700/10 hover:text-red-700 rounded-2xl px-4 py-4 h-auto font-bold"
                                     >
                                         <X size={20} /> Cancelar
                                     </Button>
-                                    <Button 
-                                        onClick={() => setIsEditing(false)} 
-                                        className="bg-primary hover:bg-primary/90 text-white rounded-2xl px-4 py-4 h-auto font-bold shadow-lg shadow-primary/20 gap-2"
-                                    >
+                                    <Button
+                                        onClick={async () => {
+                                            await handleUserProfile();
+                                            setIsEditing(false)
+                                        }
+                                        }
+                                        className="bg-primary hover:bg-primary/90 text-white rounded-2xl px-4 py-4 h-auto font-bold shadow-lg shadow-primary/20 gap-2">
                                         <Save size={20} /> Salvar Alterações
                                     </Button>
                                 </div>
@@ -82,13 +115,13 @@ export default function ProfilePage() {
 
                         <CardContent className="p-8 md:p-16">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                                
-                                <MenteSaInput 
+
+                                <MenteSaInput
                                     label="Nome Completo"
                                     icon={<User size={20} />}
                                     isEditing={isEditing}
-                                    value={userProfile.name}
-                                    onChange={(v) => setUserProfile({...userProfile, name: v})}
+                                    value={userProfile.name ?? ""}
+                                    onChange={(e) => setUserProfile({ ...userProfile, name: e })}
                                 />
 
                                 {/* <MenteSaInput 
@@ -100,12 +133,12 @@ export default function ProfilePage() {
                                     type="email"
                                 /> */}
 
-                                <MenteSaInput 
+                                <MenteSaInput
                                     label="Celular"
                                     icon={<Phone size={20} />}
                                     isEditing={isEditing}
-                                    value={userProfile.phone}
-                                    onChange={(v) => setUserProfile({...userProfile, phone: v})}
+                                    value={userProfile.phone ?? ""}
+                                    onChange={(e) => setUserProfile({ ...userProfile, phone: e })}
                                 />
 
                                 {/* <MenteSaInput 
@@ -141,31 +174,53 @@ export default function ProfilePage() {
         </div>
     );
 }
+const phoneMask = (value: string) => {
+    if (!value) return "";
 
+    // Remove tudo que não é dígito
+    const digits = value.replace(/\D/g, "");
+
+    // Aplica a formatação (xx) xxxxx-xxxx
+    return digits
+        .replace(/(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{5})(\d)/, "$1-$2")
+        .replace(/(-\d{4})\d+?$/, "$1"); // Limita a 11 dígitos
+};
 // Subcomponente de Input Estilizado
 function MenteSaInput({ label, icon, value, isEditing, onChange, type = "text", placeholder }: any) {
+
+    // Intercepta a mudança para aplicar a máscara apenas se for campo de celular
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let val = e.target.value;
+
+        if (label.toLowerCase() === "celular") {
+            val = phoneMask(val);
+        }
+        onChange(val);
+    };
     return (
         <div className="space-y-3 group">
             <label className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground/60 ml-2 group-focus-within:text-primary transition-colors">
                 {label}
             </label>
-            
+
             <div className={`
                 flex items-center gap-4 px-6 py-5 rounded-[22px] border transition-all duration-500
-                ${isEditing 
-                    ? "bg-card border-primary/40 shadow-[0_10px_30px_rgba(var(--primary),0.1)] ring-4 ring-primary/5" 
+                ${isEditing
+                    ? "bg-card border-primary/40 shadow-[0_10px_30px_rgba(var(--primary),0.1)] ring-4 ring-primary/5"
                     : "bg-muted/30 border-transparent opacity-80"
                 }
             `}>
                 <span className={`${isEditing ? 'text-primary' : 'text-muted-foreground'} transition-colors duration-500`}>
                     {icon}
                 </span>
-                
-                <input 
+
+                <input
+                    maxLength={50}
                     type={type}
                     value={value}
                     placeholder={placeholder}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={handleChange} // <-- Usando a nova função aqui
                     disabled={!isEditing}
                     className="bg-transparent w-full outline-none text-lg font-bold text-foreground disabled:cursor-not-allowed placeholder:text-muted-foreground/30"
                 />
